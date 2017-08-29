@@ -280,5 +280,10 @@ namespace CPE200Lab1
             result3 -= mMinus;
             isAfterOperater = true;
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
