@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CPE200Lab1
 {
@@ -10,12 +8,57 @@ namespace CPE200Lab1
     {
         public new string Process(string str)
         {
+            if (str is "" || str is null)
+            {
+                return "E";
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////
             Stack<string> rpnStack = new Stack<string>();
-            List<string> parts = str.Split(' ').ToList<string>();
+            List<string> parts = str.Split(' ').ToList<string>();//////////////////////////////////////////////////
+            ////////------------------------------------------------------------------------------------------/////
+            for (int i = 0; i < parts.Capacity; i++)
+            {
+                if (parts[i].Length > 1)
+                {
+                    bool afafk = true;
+                    for (int j = 0; j < parts[i].Length; j++)
+                    {
+                        if (j == 0)
+                        {
+                            afafk = isNumber(Convert.ToString(parts[i][j]));
+                        }
+                        else
+                        {
+                            if (afafk == isNumber(Convert.ToString(parts[i][j])))
+                            {
+                                if (!afafk) // operator operator
+                                {
+                                    return "E";
+                                }
+                            }
+                            else
+                            {
+                                if (afafk) //// number operator
+                                {
+                                    return "E";
+                                }
+                                else /// operator number
+                                {
+                                    if (parts[i][0] != '-')
+                                    {
+                                        return "E";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ///////------------------------------------------------------------------------------------------//////
             string result;
             string firstOperand, secondOperand;
-
-            foreach (string token in parts)
+            string tempy;
+            foreach (string token in parts)///////////////////////////////////////////////////////////////////////
             {
                 if (isNumber(token))
                 {
@@ -23,20 +66,38 @@ namespace CPE200Lab1
                 }
                 else if (isOperator(token))
                 {
-                    //FIXME, what if there is only one left in stack?
-                    secondOperand = rpnStack.Pop();
-                    firstOperand = rpnStack.Pop();
-                    result = calculate(token, firstOperand, secondOperand, 4);
+                    try
+                    {
+                        secondOperand = rpnStack.Pop();
+                        firstOperand = rpnStack.Pop();
+                    }
+                    catch
+                    {
+                        return "E";
+                    }
+                    ///////////////////////////////////////////////////////////////////////////////
+                    result = calculate(token, firstOperand, secondOperand);
                     if (result is "E")
                     {
                         return result;
                     }
+                    ///////////////////////////////////////////////////////////////////////////////
                     rpnStack.Push(result);
+                    ///////////////////////////////////////////////////////////////////////////////
                 }
             }
-            //FIXME, what if there is more than one, or zero, items in the stack?
             result = rpnStack.Pop();
-            return result;
+            try
+            {
+                tempy = rpnStack.Pop();
+                rpnStack.Push(tempy);
+            }
+            catch
+            {
+                return result;
+
+            }
+            return "E";
         }
     }
 }

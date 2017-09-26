@@ -8,37 +8,20 @@ namespace CPE200Lab1
 {
     public class CalculatorEngine
     {
-        protected bool isNumber(string str)
-        {
-            double retNum;
-            return Double.TryParse(str, out retNum);
-        }
-
-        protected bool isOperator(string str)
-        {
-            switch(str) {
-                case "+":
-                case "-":
-                case "X":
-                case "÷":
-                    return true;
-            }
-            return false;
-        }
-
         public string Process(string str)
         {
             //Split input string to multiple parts by space
             List<string> parts = str.Split(' ').ToList<string>();
             string result;
             //As long as we have more than one part
-            while(parts.Count > 1)
+            while (parts.Count > 1)
             {
                 //Check if the first three is ready for calcuation
-                if(!(isNumber(parts[0]) && isOperator(parts[1]) && isNumber(parts[2])))
+                if (!(isNumber(parts[0]) && isOperator(parts[1]) && isNumber(parts[2])))
                 {
                     return "E";
-                } else
+                }
+                else
                 {
                     //Calculate the first three
                     result = calculate(parts[1], parts[0], parts[2], 4);
@@ -74,7 +57,7 @@ namespace CPE200Lab1
                         return result.ToString("N" + remainLength);
                     }
                 case "1/x":
-                    if(operand != "0")
+                    if (operand != "0")
                     {
                         double result;
                         string[] parts;
@@ -97,6 +80,26 @@ namespace CPE200Lab1
             }
             return "E";
         }
+    
+
+    protected bool isNumber(string str)
+        {
+            double retNum;
+            return Double.TryParse(str, out retNum);
+        }
+
+        protected bool isOperator(string str)
+        {
+            switch (str)
+            {
+                case "+":
+                case "-":
+                case "X":
+                case "÷":
+                    return true;
+            }
+            return false;
+        }
 
         public string calculate(string operate, string firstOperand, string secondOperand, int maxOutputSize = 8)
         {
@@ -114,25 +117,23 @@ namespace CPE200Lab1
                     {
                         double result;
                         string[] parts;
-                        int remainLength;
 
                         result = (Convert.ToDouble(firstOperand) / Convert.ToDouble(secondOperand));
-                        // split between integer part and fractional part
                         parts = result.ToString().Split('.');
-                        // if integer part length is already break max output, return error
                         if (parts[0].Length > maxOutputSize)
                         {
                             return "E";
                         }
-                        // calculate remaining space for fractional part.
-                        remainLength = maxOutputSize - parts[0].Length - 1;
-                        // trim the fractional part gracefully. =
-                        return result.ToString("N" + remainLength);
+                        if (parts.Length > 1)
+                        {
+                            if (parts[1].Length > 4)
+                            {
+                                return result.ToString("N" + 4);
+                            }
+                        }
+                        return result.ToString();
                     }
-                    break;
-                case "%":
-                    //your code here
-                    break;
+                    return "E";
             }
             return "E";
         }
